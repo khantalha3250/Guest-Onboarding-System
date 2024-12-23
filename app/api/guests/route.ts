@@ -68,3 +68,49 @@ export async function GET() {
     );
   }
 }
+export async function PATCH(req: NextRequest) {
+  try {
+    const {
+      id,
+      fullName,
+      mobileNumber,
+      address,
+      purposeOfVisit,
+      stayDateFrom,
+      stayDateTo,
+      email,
+      idProofNumber,
+    } = await req.json();
+
+    // Validate required fields
+    if (!id) {
+      return NextResponse.json(
+        { error: "Guest ID is required" },
+        { status: 400 }
+      );
+    }
+
+    // Update guest record
+    const updatedGuest = await prisma.guest.update({
+      where: { id },
+      data: {
+        fullName,
+        mobileNumber,
+        address,
+        purposeOfVisit,
+        stayDateFrom: stayDateFrom ? new Date(stayDateFrom) : undefined,
+        stayDateTo: stayDateTo ? new Date(stayDateTo) : undefined,
+        email,
+        idProofNumber,
+      },
+    });
+
+    return NextResponse.json(updatedGuest, { status: 200 });
+  } catch (error) {
+    console.error("Error updating guest:", error);
+    return NextResponse.json(
+      { error: "Error updating guest" },
+      { status: 500 }
+    );
+  }
+}

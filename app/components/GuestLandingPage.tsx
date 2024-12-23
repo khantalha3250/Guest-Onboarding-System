@@ -1,178 +1,74 @@
 "use client";
-import React, { useState } from "react";
-import { useRouter } from "next/navigation"; // Import useRouter
+import React, { useState, useEffect } from "react";
+import Image from "next/image";
+
+interface Hotel {
+  id: number;
+  name: string;
+  address: string;
+  logo: string;
+  qrCode?: string; // Optional QR code field
+}
 
 const GuestLandingPage: React.FC = () => {
-  const router = useRouter(); // Initialize router
-  const [formData, setFormData] = useState({
-    fullName: "",
-    mobileNumber: "",
-    address: "",
-    purposeOfVisit: "",
-    stayDateFrom: "",
-    stayDateTo: "",
-    email: "",
-    idProofNumber: "",
-  });
+  const [hotels, setHotels] = useState<Hotel[]>([]);
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  // Fetch hotels on component mount
+  useEffect(() => {
+    fetchHotels();
+  }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const fetchHotels = async () => {
     try {
-      const response = await fetch("/api/guests", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        router.push("/thank-you");
-      } else {
-        console.error("Error submitting the form");
-      }
+      const response = await fetch("/api/hotels");
+      const data: Hotel[] = await response.json();
+      setHotels(data);
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error fetching hotels:", error);
     }
   };
 
   return (
-    <div className="bg-gray-100 text-gray-800 min-h-screen pt-20">
-      <header className="bg-blue-600 text-white py-4 px-6">
-        <h1 className="text-xl font-bold">Welcome to [Hotel Name]</h1>
+    <div className="bg-gray-100 text-gray-800 min-h-screen pt-10">
+      <header className="bg-blue-600 text-white py-4 px-6 text-center">
+        <h1 className="text-xl font-bold">Welcome to Our Hotels</h1>
+        <p className="text-sm">Explore and scan QR codes to learn more</p>
       </header>
 
       <main className="p-6">
-        <section className="bg-white p-6 rounded-lg shadow">
-          <h2 className="text-lg font-bold mb-4">Guest Information Form</h2>
-          <form
-            className="grid grid-cols-1 md:grid-cols-2 gap-4"
-            onSubmit={handleSubmit}
-          >
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Full Name
-              </label>
-              <input
-                type="text"
-                name="fullName"
-                value={formData.fullName}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:ring-blue-300"
-                placeholder="Enter your full name"
-                required
+        <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {hotels.map((hotel) => (
+            <div
+              key={hotel.id}
+              className="bg-white rounded-lg shadow-md p-4 flex flex-col items-center"
+            >
+              <Image
+                src={hotel.logo}
+                alt={hotel.name}
+                width={100}
+                height={100}
+                className="rounded-full object-contain mb-4"
               />
-            </div>
+              <h2 className="text-lg font-bold">{hotel.name}</h2>
+              <p className="text-sm text-gray-600 text-center">
+                {hotel.address}
+              </p>
 
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Mobile Number
-              </label>
-              <input
-                type="tel"
-                name="mobileNumber"
-                value={formData.mobileNumber}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:ring-blue-300"
-                placeholder="Enter your mobile number"
-                required
-              />
+              <div className="mt-4">
+                {hotel.qrCode ? (
+                  <Image
+                    src={hotel.qrCode}
+                    alt={`QR Code for ${hotel.name}`}
+                    width={100}
+                    height={100}
+                    className="object-contain"
+                  />
+                ) : (
+                  <p className="text-red-500 text-sm">QR Code not available</p>
+                )}
+              </div>
             </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Address</label>
-              <input
-                type="text"
-                name="address"
-                value={formData.address}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:ring-blue-300"
-                placeholder="Enter your address"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Purpose of Visit
-              </label>
-              <select
-                name="purposeOfVisit"
-                value={formData.purposeOfVisit}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:ring-blue-300"
-                required
-              >
-                <option value="">Select</option>
-                <option value="Business">Business</option>
-                <option value="Personal">Personal</option>
-                <option value="Tourist">Tourist</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Stay Date From
-              </label>
-              <input
-                type="date"
-                name="stayDateFrom"
-                value={formData.stayDateFrom}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:ring-blue-300"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Stay Date To
-              </label>
-              <input
-                type="date"
-                name="stayDateTo"
-                value={formData.stayDateTo}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:ring-blue-300"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Email ID</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:ring-blue-300"
-                placeholder="Enter your email"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                ID Proof Number
-              </label>
-              <input
-                type="text"
-                name="idProofNumber"
-                value={formData.idProofNumber}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:ring-blue-300"
-                placeholder="Enter your ID proof number"
-                required
-              />
-            </div>
-            <div className="md:col-span-2">
-              <button
-                type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-500 text-white py-2 rounded mt-4"
-              >
-                Submit
-              </button>
-            </div>
-          </form>
+          ))}
         </section>
       </main>
     </div>

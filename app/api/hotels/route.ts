@@ -38,7 +38,6 @@ export async function GET() {
 }
 
 // Handle PATCH requests (Generate and Save QR Code)
-
 export async function PATCH(req: NextRequest) {
   try {
     const body = await req.json();
@@ -59,17 +58,11 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: "Hotel not found" }, { status: 404 });
     }
 
-    // Generate QR code only if the name and address are valid
-    if (!hotel.name || !hotel.address) {
-      return NextResponse.json(
-        { error: "Hotel name or address is missing" },
-        { status: 400 }
-      );
-    }
-
-    const qrCodeData = await QRCode.toDataURL(
-      `Hotel: ${hotel.name}, Address: ${hotel.address}`
-    );
+    // Generate QR code with the route to the guest form
+    const qrCodeRoute = `http://localhost:3000/guest-page/${encodeURIComponent(
+      hotel.id
+    )}`;
+    const qrCodeData = await QRCode.toDataURL(qrCodeRoute);
 
     // Update the hotel record with the generated QR code
     const updatedHotel = await prisma.hotel.update({
@@ -79,7 +72,6 @@ export async function PATCH(req: NextRequest) {
 
     return NextResponse.json(updatedHotel, { status: 200 });
   } catch (error) {
-    // Type assertion to handle `error` as an instance of Error
     if (error instanceof Error) {
       console.error("Error generating QR code:", error.message);
       return NextResponse.json(
@@ -88,7 +80,6 @@ export async function PATCH(req: NextRequest) {
       );
     }
 
-    // Handle cases where `error` is not an instance of Error
     console.error("Unexpected error:", error);
     return NextResponse.json(
       { error: "An unexpected error occurred" },

@@ -4,16 +4,18 @@ generator client {
 
 datasource db {
   provider = "mysql" // Replace with your database provider
-  url      = env("DATABASE_URL") // Make sure this is set in .env
+  url      = env("DATABASE_URL") // Ensure this is set in .env
 }
 
 model Hotel {
-  id       Int    @id @default(autoincrement())
+  id       Int      @id @default(autoincrement())
   name     String
   address  String
   logo     String
-  qrCode   String? @db.Text // Change this to Text
+  qrCode   String?  @db.Text // QR Code data (optional)
+  guests   Guest[]  // Relation to Guest model
 }
+
 model Guest {
   id            Int      @id @default(autoincrement())
   fullName      String
@@ -25,4 +27,6 @@ model Guest {
   email         String
   idProofNumber String
   createdAt     DateTime @default(now())
+  hotelId       Int      @default(1) // Set default value
+  hotel         Hotel    @relation(fields: [hotelId], references: [id]) // Foreign key relation
 }

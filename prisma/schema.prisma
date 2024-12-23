@@ -14,3 +14,15 @@ model Hotel {
   logo     String
   qrCode   String? @db.Text // Change this to Text
 }
+model Guest {
+  id            Int      @id @default(autoincrement())
+  fullName      String
+  mobileNumber  String
+  address       String
+  purposeOfVisit String
+  stayDateFrom  DateTime
+  stayDateTo    DateTime
+  email         String
+  idProofNumber String
+  createdAt     DateTime @default(now())
+}

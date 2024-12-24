@@ -94,7 +94,7 @@ export default function Header() {
               Home
             </span>
           </Link>
-          <Link href="/about" passHref>
+          <Link href="/main-admin" passHref>
             <span
               onClick={toggleMenu}
               className="text-darkGray hover:text-deepBlue text-base font-bold transition duration-300"
@@ -102,7 +102,7 @@ export default function Header() {
               Main Admin
             </span>
           </Link>
-          <Link href="/classes" passHref>
+          <Link href="/guest-admin" passHref>
             <span
               onClick={toggleMenu}
               className="text-darkGray hover:text-deepBlue text-base font-bold transition duration-300"

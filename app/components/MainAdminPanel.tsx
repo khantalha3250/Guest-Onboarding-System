@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-
+import { useRouter } from "next/navigation";
 interface Hotel {
   id: number;
   name: string;
@@ -17,6 +17,7 @@ const MainAdminPanel: React.FC = () => {
     address: "",
     logo: "",
   });
+  const router = useRouter();
 
   // Fetch hotels on component mount
   useEffect(() => {
@@ -82,13 +83,28 @@ const MainAdminPanel: React.FC = () => {
       console.error("Error:", error);
     }
   };
+  const handleLogout = async () => {
+    try {
+      // Clear the authentication token from cookies
+      document.cookie =
+        "mainAuthToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;"; // Clear main admin cookie
+
+      // Redirect to the login page
+      router.push("/main-login");
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  };
 
   return (
     <div className="bg-gray-100 text-gray-800 min-h-screen pt-20">
       <header className="bg-blue-600 text-white py-4 px-6">
         <div className="flex justify-between items-center">
           <h1 className="text-xl font-bold">Main Admin Panel</h1>
-          <button className="bg-blue-800 hover:bg-blue-700 text-sm px-4 py-2 rounded">
+          <button
+            onClick={handleLogout}
+            className="bg-blue-800 hover:bg-blue-700 text-sm px-4 py-2 rounded"
+          >
             Logout
           </button>
         </div>

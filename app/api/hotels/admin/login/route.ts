@@ -18,11 +18,11 @@ export async function POST(req: Request) {
     }
 
     // Find the guest admin by email
-    const guestAdmin = await prisma.guestAdmin.findUnique({
+    const mainAdmin = await prisma.mainAdmin.findUnique({
       where: { email },
     });
 
-    if (!guestAdmin) {
+    if (!mainAdmin) {
       return NextResponse.json(
         { error: "Invalid email or password." },
         { status: 401 }
@@ -30,7 +30,7 @@ export async function POST(req: Request) {
     }
 
     // Compare the hashed password
-    const isPasswordValid = await bcrypt.compare(password, guestAdmin.password);
+    const isPasswordValid = await bcrypt.compare(password, mainAdmin.password);
     if (!isPasswordValid) {
       return NextResponse.json(
         { error: "Invalid email or password." },

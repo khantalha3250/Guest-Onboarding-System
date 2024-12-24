@@ -80,10 +80,17 @@ const GuestAdminPanel: React.FC = () => {
       });
     }
   };
-  const handleLogout = () => {
-    document.cookie =
-      "authToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;"; // Clear cookie
-    router.push("/guest-login");
+  const handleLogout = async () => {
+    try {
+      // Clear the authentication token from cookies
+      document.cookie =
+        "guestAuthToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;"; // Clear main admin cookie
+
+      // Redirect to the login page
+      router.push("/guest-login");
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
   };
 
   return (

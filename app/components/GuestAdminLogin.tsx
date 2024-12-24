@@ -27,6 +27,8 @@ const GuestAdminLogin: React.FC = () => {
       });
 
       if (response.ok) {
+        const data = await response.json();
+        document.cookie = `authToken=${data.token}; path=/; secure`; // Set auth cookie
         router.push("/guest-admin");
       } else {
         const data = await response.json();

@@ -29,7 +29,7 @@ const GuestLandingPage: React.FC = () => {
   };
 
   return (
-    <div className="bg-gray-100 text-gray-800 min-h-screen pt-10">
+    <div className="bg-gray-100 text-gray-800 min-h-screen pt-20">
       <header className="bg-blue-600 text-white py-4 px-6 text-center">
         <h1 className="text-xl font-bold">Welcome to Our Hotels</h1>
         <p className="text-sm">Explore and scan QR codes to learn more</p>

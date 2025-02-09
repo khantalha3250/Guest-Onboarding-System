@@ -48,7 +48,7 @@ const GuestFormPage: React.FC = () => {
 
     try {
       const payload = { ...formData, hotelId: Number(hotelId) }; // Add hotelId to form data
-      const response = await fetch("/api/guests", {
+      const response = await fetch("/api/guests/[id]", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
